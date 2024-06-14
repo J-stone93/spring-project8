@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 
 import com.example.demo.dto.BoardDTO;
 import com.example.demo.entity.Board;
+import com.example.demo.entity.Member;
 
 public interface BoardService {
 
@@ -26,11 +27,16 @@ public interface BoardService {
 	// dto를 엔티티로 변환하는 메소드
 	default Board dtoToEntity(BoardDTO dto) {
 
+		// 외래키로 변경된 writer로 인해 멤버 객체에 id값 넣어서 엔티티로 보내줘야함
+		Member member = Member.builder()
+							  .id(dto.getWriter())
+							  .build();
+		
 		Board entity = Board.builder()
 				.no(dto.getNo())
 				.title(dto.getTitle())
 				.content(dto.getContent())
-				.writer(dto.getWriter())
+				.writer(member)
 				.build();
 		return entity;
 	}
@@ -38,11 +44,13 @@ public interface BoardService {
 	// 엔티티를 dto로 변환하는 메소드
 	default BoardDTO entityToDto(Board entity) {
 
+		
+		
 		BoardDTO dto = BoardDTO.builder()
 				.no(entity.getNo())
 				.title(entity.getTitle())
 				.content(entity.getContent())
-				.writer(entity.getWriter())
+				.writer(entity.getWriter().getId()) // 멤버객체에서 id값만 갖고와줘야함
 				.regDate(entity.getRegDate())
 				.modDate(entity.getModDate())
 				.build();

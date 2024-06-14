@@ -38,6 +38,7 @@ public class BoardController {
     	System.out.println("현재 페이지 번호: " + list.getNumber() + 1);
     	System.out.println("페이지에 표시할 게시물 수: " + list.getNumberOfElements());
     	
+//    	model.addAttribute("page", page);
     }
 
     // 등록화면
@@ -55,9 +56,13 @@ public class BoardController {
 
     // 상세화면
     @GetMapping("/read")
-    public void read(@RequestParam(name = "no") int no, Model model) {
+    public void read(@RequestParam(name = "no") int no,
+    				 @RequestParam(defaultValue = "0", name = "page") int page,
+    				 Model model) {
         BoardDTO dto = service.read(no);
         model.addAttribute("dto", dto);
+        
+        model.addAttribute("page", page); // 화면에 페이지번호 전달
     }
 
     // 수정화면

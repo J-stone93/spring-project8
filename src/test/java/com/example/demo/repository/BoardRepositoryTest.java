@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.example.demo.entity.Board;
+import com.example.demo.entity.Member;
 
 @SpringBootTest
 public class BoardRepositoryTest {
@@ -21,9 +23,13 @@ public class BoardRepositoryTest {
 	@Test
 	public void 게시물30개추가() {
 
+		Member member = Member.builder()
+				  .id("user1")
+				  .build();
+		
 		for (int i = 1; i <= 30; i++) {
 
-			Board board = Board.builder().title(i + "번글").content("안녕하세요").writer("둘리").build();
+			Board board = Board.builder().title(i + "번글").content("안녕하세요").writer(member).build();
 
 			repository.save(board);
 
@@ -45,10 +51,48 @@ public class BoardRepositoryTest {
 		List<Board> list = result.getContent();
 		
 		System.out.println(list);
-				
+	}
+	
+	@Test
+	public void 게시물등록() {
 		
+		// 회원 엔티티 생성
+		Member member = Member.builder()
+							  .id("user1")
+							  .build();
+		// 회원테이블에 없는 아이디를 사용하면 에러남
+		Board board = Board.builder()
+						   .title("첫번째 글입니다")
+						   .content("안녕하세요")
+						   .writer(member)
+						   .build();
+		
+		repository.save(board);
+	}
+	
+	@Test
+	public void 게시물조회() {
+		
+		// 쿼리가 내부적으로 join 처리함
+		Optional<Board> result = repository.findById(3);
+		
+		if (result.isPresent()) {
+			
+			Board board = result.get();
+			System.out.println(board);
+			
+		}
+	}
+	
+	@Test
+	public void 특정회원이작성한게시물삭제() {
+		
+		Member member = Member.builder().id("user1").build();
+		
+		repository.dedeleteWriter(member);
 	}
 }
+
 
 
 
