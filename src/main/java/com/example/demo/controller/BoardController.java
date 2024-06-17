@@ -20,10 +20,10 @@ public class BoardController {
     @Autowired
     BoardService service;
 
-    // 메인화면
-    @GetMapping("/main")
-    public void main() {
-    }
+//    // 메인화면
+//    @GetMapping("/main")
+//    public void main() {
+//    }
 
     // 목록화면
     @GetMapping("/list")		// list가 보일때 처음 페이지 설정
